@@ -8,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
 namespace WindowsFormsApp1
 {
     public partial class frmBaoCao : Form
@@ -16,8 +17,10 @@ namespace WindowsFormsApp1
         string connectionString = @"Data Source=ADMIN-PC\SQLEXPRESS;Initial Catalog=QLBANSACH;Integrated Security=True";
         SqlDataAdapter da = new SqlDataAdapter();
         DataTable dt = new DataTable("HoaDon");
-        public frmBaoCao()
+        private string tenNhanVien;
+        public frmBaoCao(string tennv)
         {
+            tenNhanVien = tennv;
             InitializeComponent();
         }
 
@@ -49,10 +52,12 @@ namespace WindowsFormsApp1
             SqlDataAdapter da = new SqlDataAdapter(cmd); // Khai báo DataAdapter
             DataTable dt = new DataTable(); // Khai báo DataTable
             da.Fill(dt); // Đổ dữ liệu vào DataTable
-
+            
             //gán dữ liệu cho report
             rptHoaDon baocao = new rptHoaDon();
             baocao.SetDataSource(dt);
+            TextObject txtNguoiLap = (TextObject)baocao.ReportDefinition.Sections["Section1"].ReportObjects["TxtobjNguoiLap"];
+            txtNguoiLap.Text = "Người Lập: " + this.tenNhanVien;
             //Hiển thị báo cáo
             this.crystalReportViewer1.ReportSource = baocao;
 
